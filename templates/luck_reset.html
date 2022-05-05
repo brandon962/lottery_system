@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lottery_reset</title>
+</head>
+
+<body>
+    <div style="width: 210px;margin:0 auto">
+        <form method="post">
+            {% csrf_token %}
+            <label for="lottery_name">lottery name：</label>
+            <input type="text" name="lottery_name" style="width: 150px"><br><br>
+            <label for="prize_1">First prize：</label>
+            <input type="text" name="prize_1" style="width: 150px"><br><br>
+            <label for="prize_2">Second prize：</label>
+            <input type="text" name="prize_2" style="width: 150px"><br><br>
+            <label for="prize_3">Third prize：</label>
+            <input type="text" name="prize_3" style="width: 150px"><br><br>
+            <label for="prize_4">Fourth prize：</label>
+            <input type="text" name="prize_4" style="width: 150px"><br><br>
+            <label for="prize_5">Fifth prize：</label>
+            <input type="text" name="prize_5" style="width: 150px"><br><br>
+            <label for="prize_6">Sixth prize：</label>
+            <input type="text" name="prize_6" style="width: 150px"><br><br>
+            <label for="prize_7">Seventh prize：</label>
+            <input type="text" name="prize_7" style="width: 150px"><br><br>
+            <label for="prize_8">Eighth prize：</label>
+            <input type="text" name="prize_8" style="width: 150px"><br><br>
+            <label for="prize_9">Ninth prize：</label>
+            <input type="text" name="prize_9" style="width: 150px"><br><br>
+            <label for="prize_10">Tenth prize：</label>
+            <input type="text" name="prize_10" style="width: 150px"><br><br>
+            <input type="reset" value="reset">&nbsp;&nbsp;<input type="submit" value="submit">&nbsp;&nbsp;
+            <button type="button">
+                <a href="luck_home">Go back</a>
+            </button>
+        </form>
+        {% if result %}
+        <p style="text-align: center">Lottery successfully set.</p>
+        {% endif %}
+    </div>
+</body>

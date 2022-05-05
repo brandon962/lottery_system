@@ -22,6 +22,7 @@ urlpatterns = [
     path('scan', views.myscan, name='scan'),
     path('luck_home', views.luck_home, name='luck_home'),
     path('luck_start', views.luck_start, name='luck_start'),
+    path('luck_reset', views.luck_reset, name='luck_reset'),
     path('add', views.add, name='add'),
     path('welcome/', views.welcome, name='welcome'),
 ]
