@@ -18,8 +18,10 @@ from django.urls import path
 from lottery import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.user, name='home'),
-    path('scan', views.scan, name='scan'),
-    path('luck', views.luck, name='luck'),
+    path('', views.users, name='home'),
+    path('scan', views.myscan, name='scan'),
+    path('luck_home', views.luck_home, name='luck_home'),
+    path('luck_start', views.luck_start, name='luck_start'),
     path('add', views.add, name='add'),
+    path('welcome/', views.welcome, name='welcome'),
 ]

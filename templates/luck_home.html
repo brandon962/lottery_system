@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lottery_home</title>
+</head>
+
+<body>
+    <div style="width: 210px;margin:0 auto">
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="start" name="type">
+        </form>
+        <button type="button">
+            <a href="luck_start"> luck start</a>
+        </button>
+        {% if result %}
+        <p style="text-align: center">新增成功</p>
+        {% endif %}
+    </div>
+</body>
+
