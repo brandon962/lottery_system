@@ -2,21 +2,21 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>手動加入</title>
+    <title>join manually</title>
 </head>
 
 <body>
     <div style="width: 210px;margin:0 auto">
         <form method="post">
             {% csrf_token %}
-            <label for="uid">員工編號：</label>
+            <label for="uid">uid:</label>
             <input type="text" name="uid" style="width: 150px"><br><br>
-            <label for="uname">員工姓名：</label>
+            <label for="uname">member name:</label>
             <input type="text" name="uname" style="width: 150px"><br><br>
             <input type="reset">&nbsp;&nbsp;<input type="submit">
         </form>
         {% if result %}
-        <p style="text-align: center">新增成功</p>
+        <p style="text-align: center">Success</p>
         {% endif %}
     </div>
 </body>

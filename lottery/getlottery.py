@@ -2,7 +2,24 @@ from pymongo import MongoClient
 from pymongo import UpdateOne
 import random
 
+
+
 class My_mongodb:
+
+    class prize_list:
+        def __init__(self, uid, uname, prize):
+            self.uid = uid
+            self.uname = uname
+            self.prize = prize
+
+    def get_prize_member(self):
+        prize_member=[]
+        luck_member = self.all_col.find({self.lottery_name:{"$ne":0}}).sort(self.lottery_name)
+        for p in luck_member:
+            mem = self.prize_list(p['uid'], p['uname'], p[self.lottery_name])
+            prize_member.append(mem)
+        return prize_member
+        
     def make_connection(self):
         self.connect = MongoClient(host="127.0.0.1", port=27017)
         self.mydb = self.connect["lottery_db"]
@@ -11,6 +28,9 @@ class My_mongodb:
 
     def clean_temp_col(self):
         self.temp_col.drop()
+
+    def clean_now_lottery(self):
+        self.all_col.update_many({},{"$set":{self.lottery_name:0}})
 
     def make_temp_col(self, lottery_name):
         self.lottery_name = lottery_name
@@ -22,7 +42,7 @@ class My_mongodb:
             member[self.lottery_name] = 0
             new_col.append(member)
         self.temp_col.insert_many(new_col)
-        self.all_col.update_many({},{"$set":{lottery_name:0}})
+        # self.all_col.update_many({},{"$set":{self.lottery_name:0}})
 
     def get_lottery(self, lottery_th, lottery_num):
         choose = self.temp_col.find({self.lottery_name: 0}).sort(
@@ -59,3 +79,5 @@ if __name__ == "__main__":
     a.get_lottery(2,10000)
     tt = time.time()
     print(tt-t)
+
+    a.get_prize_member()

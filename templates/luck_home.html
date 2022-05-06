@@ -7,19 +7,27 @@
 
 <body>
     <div style="width: 210px;margin:0 auto">
-        <form method="post">
+        <!-- <form method="post">
             {% csrf_token %}
             <input type="submit" value="start" name="type">
-        </form>
+        </form> -->
         <button type="button">
             <a href="luck_start"> luck start</a>
         </button>
         <button type="button">
             <a href="luck_reset"> luck reset</a>
         </button>
-        {% if result %}
-        <p style="text-align: center">新增成功</p>
-        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <!-- <label for="uid">員工編號：</label> -->
+            <input type="submit" value="lottery clear" name="lottery_clear">
+        </form>
+        <button type="button">
+            <a href="look_prize"> look prize</a>
+        </button>
+        <button type="button">
+            <a href="all_member"> all member</a>
+        </button>
     </div>
 </body>
 

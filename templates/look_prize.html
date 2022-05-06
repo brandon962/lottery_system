@@ -10,13 +10,15 @@
     <table border="1">
         <tr>
             <td>uid</td>
-            <td>member name</td>
+            <td>uname</td>
+            <td>prize</td>
         </tr>
 
-        {% for post in all_user %}
+        {% for post in prize_member %}
         <tr>
             <td>{{post.uid}}</td>
             <td>{{post.uname}}</td>
+            <td>{{post.prize}}</td>
         </tr>
         {% endfor %}
     </table>

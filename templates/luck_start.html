@@ -7,12 +7,69 @@
 
 <body>
     <div style="width: 210px;margin:0 auto">
+        <label for="uid">start luck</label>
         <form method="post">
             {% csrf_token %}
-            <input type="submit" value="start lottery" name="type">
+            <!-- <label for="uid">員工編號：</label> -->
+            <input type="submit" value="All prize" name="prize_all">
         </form>
-        {% if result %}
+
+        <form method="post">
+            {% csrf_token %}
+            <!-- <label for="uid">員工編號：</label> -->
+            <input type="submit" value="First prize" name="prize_1">
+        </form>
+        <!-- {% if result %}
         <p style="text-align: center">新增成功</p>
-        {% endif %}
+        {% endif %} -->
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Second prize" name="prize_2">
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Third prize" name="prize_3">
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Fourth prize" name="prize_4">
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Fifth prize" name="prize_5">
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Sixth prize" name="prize_6">
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Seventh prize" name="prize_7">
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Eighth prize" name="prize_8">
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Ninth prize" name="prize_9">
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Tenth prize" name="prize_10">
+        </form>
+        
+        <button type="button">
+            <a href="luck_home">Go back</a>
+        </button>
     </div>
+    
 </body>

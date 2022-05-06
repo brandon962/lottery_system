@@ -14,7 +14,7 @@ from django.http import HttpResponse
 
 all_user = Member.objects.order_by('uid')[:]
 luck_system = My_mongodb()
-lottery_name = 'lottery'
+lottery_name = 'lottery_state'
 
 
 def users(request):
@@ -63,10 +63,13 @@ def luck_home(request):
     global luck_system ,lottery_name
     # luck_system = My_mongodb()
     luck_system.make_connection()
-    luck_system.clean_temp_col()
     luck_system.make_temp_col(lottery_name)
     print(lottery_name)
     
+    if request.method == 'POST':
+        if 'lottery_clear' in request.POST:
+            luck_system.clean_now_lottery()
+
     return render(request, 'luck_home.html')
 
 
@@ -75,10 +78,23 @@ def luck_start(request):
     connect = MongoClient(host="127.0.0.1", port=27017)
     mydb = connect["lottery_db"]
     lottery_col = mydb["lottery_prize"]
-    prize = lottery_col.find({}).sort(lottery_name)
-    for p in prize:  
-        luck_system.get_lottery(p['prize'],p[lottery_name])
-    return render(request, 'luck_start.html')
+    tmp = lottery_col.find({}).sort(lottery_name)
+    prize=[]
+    for t in tmp:
+        prize.append(t[lottery_name])
+    if request.method == 'POST':
+        # print(request.POST)
+        if 'prize_all' in request.POST:
+            for i in range(1,11):
+                luck_system.get_lottery(i,prize[i-1])
+        for i in range(1,11):
+            if 'prize_'+str(i) in request.POST:
+                luck_system.get_lottery(i, prize[i-1])
+        return render(request, 'luck_start.html', {'result': "success"})
+    else :
+        return render(request, 'luck_start.html')
+        
+    
 
 
 
@@ -105,3 +121,14 @@ def luck_reset(request):
         return render(request, 'luck_reset.html')
     else:
         return render(request, 'luck_reset.html')
+
+def look_home(request):
+    return render(request, 'look_home.html')
+
+
+
+def look_prize(request):
+    global luck_system
+    prize_member = luck_system.get_prize_member()
+    # return render(request, 'index.html', {'all_user': all_user})
+    return render(request, 'look_prize.html',{'prize_member': prize_member})
