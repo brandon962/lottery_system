@@ -64,13 +64,14 @@ def luck_home(request):
     # luck_system = My_mongodb()
     luck_system.make_connection()
     luck_system.make_temp_col(lottery_name)
+    
     print(lottery_name)
     
     if request.method == 'POST':
         if 'lottery_clear' in request.POST:
-            luck_system.clean_now_lottery()
-
-    return render(request, 'luck_home.html')
+            luck_system.clean_now_lottery(lottery_name)
+    print(lottery_name)
+    return render(request, 'luck_home.html', {"ln":lottery_name})
 
 
 def luck_start(request):
@@ -78,7 +79,7 @@ def luck_start(request):
     connect = MongoClient(host="127.0.0.1", port=27017)
     mydb = connect["lottery_db"]
     lottery_col = mydb["lottery_prize"]
-    tmp = lottery_col.find({}).sort(lottery_name)
+    tmp = lottery_col.find({}).sort('prize')
     prize=[]
     for t in tmp:
         prize.append(t[lottery_name])
@@ -99,8 +100,9 @@ def luck_start(request):
 
 
 def luck_reset(request):
-    global lottery_name
+    global lottery_name, luck_system
     if request.method == 'POST':
+        
         lottery_name = request.POST.get('lottery_name')
         prize=[]
         for i in range(1,11):
@@ -117,7 +119,7 @@ def luck_reset(request):
                 lottery_col.insert_one({"prize":i+1, lottery_name:prize[i]})
             else:
                 lottery_col.update_one({"prize":i+1},{"$set":{lottery_name:prize[i]}})        
-
+        luck_system.clean_now_lottery(lottery_name)
         return render(request, 'luck_reset.html')
     else:
         return render(request, 'luck_reset.html')
@@ -126,9 +128,14 @@ def look_home(request):
     return render(request, 'look_home.html')
 
 
+def look_prize_single(request):
+    global luck_system
+    pass
+    return render(request)
+
 
 def look_prize(request):
     global luck_system
-    prize_member = luck_system.get_prize_member()
+    prize_member = luck_system.get_prize_allmember()
     # return render(request, 'index.html', {'all_user': all_user})
     return render(request, 'look_prize.html',{'prize_member': prize_member})

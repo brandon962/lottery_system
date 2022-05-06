@@ -6,11 +6,16 @@
 </head>
 
 <body>
-    <div style="width: 210px;margin:0 auto">
+    <div style="width: 250px;margin:0 auto">
         <!-- <form method="post">
             {% csrf_token %}
             <input type="submit" value="start" name="type">
         </form> -->
+        <label>lottery name:</label>
+        {% for post in ln %}
+        <label>{{post}}</label>
+        {% endfor %}
+        <br><br>
         <button type="button">
             <a href="luck_start"> luck start</a>
         </button>
@@ -23,11 +28,8 @@
             <input type="submit" value="lottery clear" name="lottery_clear">
         </form>
         <button type="button">
-            <a href="look_prize"> look prize</a>
+            <a href="look_home"> look home</a>
         </button>
-        <button type="button">
-            <a href="all_member"> all member</a>
-        </button>
+
     </div>
 </body>
-
