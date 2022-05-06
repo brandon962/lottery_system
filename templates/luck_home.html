@@ -11,14 +11,12 @@
             {% csrf_token %}
             <input type="submit" value="start" name="type">
         </form> -->
-        <label>lottery name:</label>
-        {% for post in ln %}
-        <label>{{post}}</label>
-        {% endfor %}
+        <label>lottery name: {{ln}}</label>
         <br><br>
-        <button type="button">
-            <a href="luck_start"> luck start</a>
-        </button>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="luck_start" name="start_lottery">
+        </form>
         <button type="button">
             <a href="luck_reset"> luck reset</a>
         </button>

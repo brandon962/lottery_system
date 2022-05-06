@@ -82,7 +82,7 @@ DATABASES = {
       'ENGINE': 'djongo',
       'ENFORCE_SCHEMA': True,
       'NAME': 'lottery_db',
-      'HOST': '127.0.0.1',
+      'HOST': '192.227.137.66',
       'PORT': 27017,
    }
 }
