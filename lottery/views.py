@@ -18,7 +18,12 @@ lottery_name = 'lottery_state'
 
 
 def users(request):
-    return render(request, 'index.html', {'all_user': all_user})
+    # all_user = Member.objects.order_by('uid')[:]
+
+    for a in all_user:
+        print(a)
+    # return render(request, 'index.html', {'all_user': all_user})
+    return render(request, 'index.html')
 
 
 def welcome(request):
