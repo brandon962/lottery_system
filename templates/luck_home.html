@@ -11,7 +11,7 @@
             {% csrf_token %}
             <input type="submit" value="start" name="type">
         </form> -->
-        <label>lottery name: {{ln}}</label>
+        
         <br><br>
         <!-- <form method="post">
             {% csrf_token %}
@@ -19,11 +19,20 @@
         </form> -->
 
         <form method="post">
+            <label>lottery name</label>
+            <select name="start_lottery">
+                {% for post in ln %}
+                <option value={{post.lottery_name}}>{{post.lottery_name}}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <label>Group id:</label>
             <select name="start_lottery">
                 {% for post in all_group %}
                 <option value={{post.group_id}}>{{post.group_id}}</option>
                 {% endfor %}
             </select>
+
             {% csrf_token %}
             <input type="submit" value="luck_start">
         </form>

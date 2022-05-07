@@ -41,8 +41,19 @@
             {% csrf_token %}
             <input type="submit" value="start" name="type">
         </form> -->
+
+        <form method="post">
+            <select name="select_lottery_name">
+                {% for post in all_lottery %}
+                <option value={{post.lottery_name}}>{{post.lottery_name}}</option>
+                {% endfor %}
+            </select>
+            {% csrf_token %}
+            <input type="submit" value="Select">
+        </form>
+
         <button type="button">
-            <a href="look_prize"> look prize</a>
+            <a href="look_select_prize"> look prize</a>
         </button>
         <button type="button">
             <a href="all_member"> all member</a>

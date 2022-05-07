@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Look select</title>
+</head>
+
+
+<body>
+    <div style="width: 250px;margin:0 auto">
+        <form method="post">
+            <select name="prize_select">
+                {% for post in prize_list %}
+                <option value={{post.prize}}>{{post.prize}}</option>
+                {% endfor %}
+            </select>
+            {% csrf_token %}
+            <input type="submit" value="look">
+        </form>
+    </div>
+</body>

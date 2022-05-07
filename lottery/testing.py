@@ -6,6 +6,7 @@ import pymongo
 import csv
 import json
 import pandas
+import names
 
 connect = MongoClient(host="127.0.0.1", port=27017)
 mydb = connect["lottery_db"]
@@ -14,4 +15,10 @@ temp_col = mydb['lottery_table']
 test_col = mydb['testing']
 group_col = mydb['lottery_group']
 
-group_col.insert_one({'group_id':1})
+add = []
+with open('output.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    add.append(['uid','uname'])
+    for i in range(60000,120000):
+        add.append([str(i),names.get_full_name()])
+    writer.writerows(add)

@@ -19,15 +19,11 @@ import pandas
 luck_system = My_mongodb()
 lottery_name = 'origin'
 group_id = 1
+look_prize_num = 1
 
 def users(request):
     global luck_system
     luck_system.make_connection()
-    luck_system.lottery_name = lottery_name
-    # all_user = Member.objects.order_by('uid')[:]
-
-    # return render(request, 'index.html', {'all_user': all_user})
-    # return render(request)
     return render(request, 'index.html', {"all_user": luck_system.get_all_user()})
 
 
@@ -87,11 +83,11 @@ def luck_home(request):
             luck_system.clean_now_lottery(lottery_name)
             # luck_system.clean_temp_col()
     print(lottery_name)
-    return render(request, 'luck_home.html', {"ln": lottery_name,'all_group':luck_system.get_all_group_id()})
+    return render(request, 'luck_home.html', {"ln": luck_system.get_all_lottery_name(),'all_group':luck_system.get_all_group_id()})
 
 
 def luck_start(request):
-    global lottery_name, luck_system, group_id
+    global lottery_name, luck_system, group_id, look_prize_num
     # luck_system.make_temp_col(lottery_name)
     connect = MongoClient(host="127.0.0.1", port=27017)
     mydb = connect["lottery_db"]
@@ -110,7 +106,8 @@ def luck_start(request):
         for i in range(1, 11):
             if 'prize_'+str(i) in request.POST:
                 luck_system.get_lottery(group_id, i, prize[i-1])
-                return redirect("/look_prize")
+                look_prize_num = i
+                return redirect("/look_prize_single")
         return render(request, 'luck_start.html')
     else:
         return render(request, 'luck_start.html')
@@ -121,7 +118,7 @@ def luck_reset(request):
     if request.method == 'POST':
 
         lottery_name = request.POST.get('lottery_name')
-        luck_system.mydb['lottery_id'].insert_one({'lottery_id':lottery_name})
+        luck_system.mydb['lottery_name'].insert_one({'lottery_name':lottery_name})
         prize = []
         for i in range(1, 11):
             if request.POST.get('prize_'+str(i)) != '':
@@ -145,22 +142,39 @@ def luck_reset(request):
 
 
 def look_home(request):
-    global luck_system
-    
-    return render(request, 'look_home.html')
+    global luck_system, lottery_name
+    if 'select_lottery_name' in request.POST:
+        lottery_name = request.POST['select_lottery_name']
+        print(lottery_name)
+        return redirect('/look_select_prize')
+    return render(request, 'look_home.html',{"all_lottery":luck_system.get_all_lottery_name()})
 
 
 def look_prize_single(request):
-    global luck_system
-    pass
-    return render(request)
+    global luck_system, look_prize_num, lottery_name
+    luck_system.lottery_name = lottery_name
+    prize_member = luck_system.get_prize_number(look_prize_num)
+    return render(request, 'look_prize.html',{'prize_member': prize_member})
 
 
 def look_prize(request):
-    global luck_system
+    global luck_system ,lottery_name
+    luck_system.lottery_name = lottery_name
     prize_member = luck_system.get_prize_allmember()
-    # return render(request, 'index.html', {'all_user': all_user})
-    return render(request, 'look_prize.html', {'prize_member': prize_member})
+    return render(request, 'look_prize.html',{'prize_member': prize_member})
+
+def look_select_prize(request):
+    global luck_system ,lottery_name, look_prize_num
+
+    if 'prize_select' in request.POST:
+        if request.POST['prize_select'] == 'all':
+            return redirect('/look_prize')
+        else:
+            look_prize_num = int(request.POST['prize_select'])
+            return redirect('/look_prize_single')
+
+
+    return render(request, 'look_select_prize.html', {'prize_list':luck_system.get_prize_list()})
 
 
 def uploadFile(request):

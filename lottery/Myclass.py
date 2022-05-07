@@ -8,7 +8,7 @@ import os
 
 class My_mongodb:
     class My_group:
-        def __init__(self,group_id):
+        def __init__(self, group_id):
             self.group_id = group_id
 
     class My_user:
@@ -16,17 +16,37 @@ class My_mongodb:
             self.uid = uid
             self.uname = uname
 
-    class prize_list:
+    class My_prize:
         def __init__(self, uid, uname, prize):
             self.uid = uid
             self.uname = uname
             self.prize = prize
 
-    def test(self):
-        print(os.getcwd())
+    class My_lottery:
+        def __init__(self, lottery_name):
+            self.lottery_name = lottery_name
+
+    class My_prize_list:
+        def __init__(self, prize):
+            self.prize = prize
+
+    def get_prize_list(self):
+        prize_list = []
+        prize = self.mydb['lottery_prize'].find({})
+        prize_list.append(self.My_prize_list('all'))
+        for p in prize:
+            prize_list.append(self.My_prize_list(str(p['prize'])))
+        return prize_list
+
+    def get_all_lottery_name(self):
+        lottery_list = []
+        lottery = self.mydb['lottery_name'].find({})
+        for l in lottery:
+            lottery_list.append(self.My_lottery(l['lottery_name']))
+        return lottery_list
 
     def get_all_group_id(self):
-        group_list=[]
+        group_list = []
         group = self.mydb['lottery_group'].find({})
         for g in group:
             group_list.append(self.My_group(g['group_id']))
@@ -42,10 +62,11 @@ class My_mongodb:
 
     def get_prize_number(self, num):
         prize_member = []
-        luck_member = self.all_col.find({"lottery_state."+str(self.lottery_name): int(num)}).sort(
-            [(self.lottery_name, pymongo.ASCENDING), ("uid", pymongo.ASCENDING)])
+        luck_member = self.all_col.find({"lottery_state."+str(self.lottery_name): num}).sort(
+            [("lottery_state."+str(self.lottery_name), pymongo.ASCENDING), ("uid", pymongo.ASCENDING)])
         for p in luck_member:
-            mem = self.prize_list(p['uid'], p['uname'], p[self.lottery_name])
+            mem = self.My_prize(p['uid'], p['uname'],
+                                p["lottery_state"][str(self.lottery_name)])
             prize_member.append(mem)
         return prize_member
 
@@ -54,8 +75,8 @@ class My_mongodb:
         luck_member = self.all_col.find({"lottery_state."+str(self.lottery_name): {"$ne": 0}}).sort(
             [("lottery_state."+str(self.lottery_name), pymongo.ASCENDING), ("uid", pymongo.ASCENDING)])
         for p in luck_member:
-            mem = self.prize_list(p['uid'], p['uname'],
-                                  p["lottery_state"][str(self.lottery_name)])
+            mem = self.My_prize(p['uid'], p['uname'],
+                                p["lottery_state"][str(self.lottery_name)])
             prize_member.append(mem)
         return prize_member
 
@@ -70,7 +91,8 @@ class My_mongodb:
 
     def clean_now_lottery(self, lottery_id):
         self.lottery_name = lottery_id
-        self.all_col.update_many({}, {"$set": {'lottery_state.'+str(lottery_id): 0}})
+        self.all_col.update_many(
+            {}, {"$set": {'lottery_state.'+str(lottery_id): 0}})
 
     def make_temp_col(self, lottery_id):
         self.lottery_name = lottery_id
@@ -88,7 +110,7 @@ class My_mongodb:
         # self.temp_col.insert_many(new_col)
         # self.all_col.update_many({},{"$set":{self.lottery_id:0}})
 
-    def get_lottery(self,group_id, lottery_type, lottery_num):
+    def get_lottery(self, group_id, lottery_type, lottery_num):
         current_lottery_state_field: str = "lottery_state."+self.lottery_name
         # 清空先前中獎人員
         self.all_col.update_many({current_lottery_state_field: lottery_type}, {
@@ -96,7 +118,7 @@ class My_mongodb:
 
         self.all_col.aggregate([{
             # 尋找沒抽過獎的人
-            "$match": {'group.'+str(group_id):"1", current_lottery_state_field: 0}
+            "$match": {'group.'+str(group_id): "1", current_lottery_state_field: 0}
         }, {
             # 隨機抽取
             "$sample": {"size": lottery_num}
@@ -105,7 +127,8 @@ class My_mongodb:
             "$set": {current_lottery_state_field: lottery_type}
         }, {
             # 寫回 collection
-            "$merge": {"into": 'lottery_member', "on": "_id"}  # Collection to modify
+            # Collection to modify
+            "$merge": {"into": 'lottery_member', "on": "_id"}
         }
         ])
 
