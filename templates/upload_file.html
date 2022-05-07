@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% load static %}
+
+<head>
+    <title>File Upload</title>
+
+</head>
+
+<body>
+    <div style="width: 210px;margin:0 auto">
+
+        <form method="POST" enctype="multipart/form-data">
+            <!-- <input type="text" name="fileTitle" placeholder="Enter a title"> -->
+            <input type="file" name="uploadedFile">
+            {% csrf_token %}
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+</body>
+
+</html>

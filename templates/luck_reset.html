@@ -7,10 +7,12 @@
 
 <body>
     <div style="width: 210px;margin:0 auto">
+        <label>Group id:  {{group_id}} </label>
+        <br><br>
+        <label>Number of lottery members {{member_count}} </label>
+        <br><br>
         <form method="post">
             {% csrf_token %}
-            <label>Number of lottery members {{member_count}} </label>
-            <br><br>
 
             <label for="lottery_name">lottery name：</label>
             <input type="text" name="lottery_name" style="width: 150px"><br><br>

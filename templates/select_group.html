@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Select group</title>
+</head>
+
+
+<body>
+    <div style="width: 210px;margin:0 auto">
+        <form method="post">
+            <select name="group_id">
+                {% for post in all_group %}
+                <option value={{post.group_id}}>{{post.group_id}}</option>
+                {% endfor %}
+            </select>
+            {% csrf_token %}
+            <input type="submit" value="Select">
+        </form>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" name="upload" value="Upload group">
+        </form>
+    </div>
+</body>

@@ -28,4 +28,6 @@ urlpatterns = [
     path('all_member', views.users, name='all_member'),
     path('add', views.add, name='add'),
     path('welcome/', views.welcome, name='welcome'),
+    path('upload_file', views.uploadFile, name = "uploadFile"),
+    path('select_group', views.select_group,name='select_group')
 ]

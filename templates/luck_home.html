@@ -13,12 +13,23 @@
         </form> -->
         <label>lottery name: {{ln}}</label>
         <br><br>
-        <form method="post">
+        <!-- <form method="post">
             {% csrf_token %}
             <input type="submit" value="luck_start" name="start_lottery">
+        </form> -->
+
+        <form method="post">
+            <select name="start_lottery">
+                {% for post in all_group %}
+                <option value={{post.group_id}}>{{post.group_id}}</option>
+                {% endfor %}
+            </select>
+            {% csrf_token %}
+            <input type="submit" value="luck_start">
         </form>
+
         <button type="button">
-            <a href="luck_reset"> luck reset</a>
+            <a href="select_group"> luck reset</a>
         </button>
         <form method="post">
             {% csrf_token %}
