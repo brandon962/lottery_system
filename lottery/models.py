@@ -7,13 +7,15 @@ class testing(models.Model):
     uname = models.CharField(verbose_name='uid', max_length=30)
     group = models.IntegerField(verbose_name='group')
 
+
 class lottery_table(models.Model):
     uid = models.CharField(verbose_name='uid', max_length=10)
 
+
 class Document(models.Model):
-    title = models.CharField(max_length = 200)
-    uploadedFile = models.FileField(upload_to = "UploadedFiles/")
-    dateTimeOfUpload = models.DateTimeField(auto_now = True)
+    title = models.CharField(max_length=200)
+    uploadedFile = models.FileField(upload_to="UploadedFiles/")
+    dateTimeOfUpload = models.DateTimeField(auto_now=True)
 
 
 class Member(models.Model):

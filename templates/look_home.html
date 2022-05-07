@@ -1,60 +1,34 @@
 <!DOCTYPE html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Django File Upload</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
-        * {
-            font-family: "Roboto";
-        }
-
-        body {
-            background-color: #F5F5F5;
-        }
-
-        form {
-            background-color: #FFFFFF;
-            padding: 25px;
-        }
-
-        table {
-            width: 100%; 
-            text-align: center;
-            margin-top: 25px;
-            padding: 25px;
-            background-color: #FFFFFF;
-        }
-
-        table tr td {
-            padding-top: 15px;            
-        }
-    </style>
+    <title>Look home</title>
 </head>
 
 <body>
     <div style="width: 210px;margin:0 auto">
-        <!-- <form method="post">
-            {% csrf_token %}
-            <input type="submit" value="start" name="type">
-        </form> -->
 
         <form method="post">
+            
+            <label>lottery name:</label>
             <select name="select_lottery_name">
                 {% for post in all_lottery %}
                 <option value={{post.lottery_name}}>{{post.lottery_name}}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <label>Group id:</label>
+            <select name="group_id_select">
+                {% for post in all_group %}
+                <option value={{post.group_id}}>{{post.group_id}}</option>
                 {% endfor %}
             </select>
             {% csrf_token %}
             <input type="submit" value="Select">
         </form>
 
-        <button type="button">
+        <!-- <button type="button">
             <a href="look_select_prize"> look prize</a>
-        </button>
+        </button> -->
         <button type="button">
             <a href="all_member"> all member</a>
         </button>
@@ -63,4 +37,3 @@
         </button>
     </div>
 </body>
-

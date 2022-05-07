@@ -1,21 +1,13 @@
-# from asyncio.windows_events import NULL
-from collections import UserList
-from turtle import update
-from xml.etree.ElementTree import tostring
 from django.shortcuts import render, redirect
-from djongo import models
 import os
-from .models import Member, Document, testing
-import names
+from .models import Member, Document
 from pymongo import MongoClient
 from pymongo import UpdateOne
 from .Myclass import My_mongodb
-from django.http import HttpResponse
 import json
 import pandas
 
-# all_user = Member.objects.order_by('uid')[:]
-
+# some global var.
 luck_system = My_mongodb()
 lottery_name = 'origin'
 group_id = 1
@@ -26,69 +18,24 @@ def users(request):
     luck_system.make_connection()
     return render(request, 'index.html', {"all_user": luck_system.get_all_user()})
 
-
-def welcome(request):
-
-    if 'user_name' in request.GET and request.GET['user_name'] != '':
-        return HttpResponse('Welcome!~' + request.GET['user_name'])
-    else:
-        return render(request, 'welcome.html', locals())
-
-
-def myscan(request):
-    result = ''
-    if request.method == 'POST':
-        uid = request.POST.get('uid')
-        uname = request.POST.get('uname')
-        db = Member()
-        db.uid = int(uid)
-        db.uname = uname
-        db.lottery_state = 0
-        db.create_time = models.DateTimeField(auto_now_add=True)
-        db.update_time = models.DateTimeField(auto_now=True)
-        db.save()
-        result = 'success'
-        return render(request, 'scan.html', {'result': result})
-    else:
-        return render(request, 'scan.html')
-
-
-def add(request):
-
-    db = Member()
-    db.uid = str(60000).zfill(10)
-    # print(db.uid)
-    db.uname = names.get_full_name()
-    db.lottery_state = 0
-    db.create_time = models.DateTimeField(auto_now_add=True)
-    db.update_time = models.DateTimeField(auto_now=True)
-    db.save()
-    return render(request, 'index.html')
-
-
 def luck_home(request):
-    global luck_system, lottery_name
-    # luck_system = My_mongodb()
+    global luck_system, lottery_name, group_id
     luck_system.make_connection()
     luck_system.lottery_name = lottery_name
 
-    # print(lottery_name)
-
     if request.method == 'POST':
-        if 'start_lottery' in request.POST:
-            luck_system.make_temp_col(lottery_name)
+        if 'lottery_name_select' in request.POST:
+            # luck_system.make_temp_col(lottery_name)
+            lottery_name = request.POST['lottery_name_select']
+            group_id = request.POST['group_id_select']
             return redirect("/luck_start")
 
         if 'lottery_clear' in request.POST:
             luck_system.clean_now_lottery(lottery_name)
-            # luck_system.clean_temp_col()
-    print(lottery_name)
-    return render(request, 'luck_home.html', {"ln": luck_system.get_all_lottery_name(),'all_group':luck_system.get_all_group_id()})
-
+    return render(request, 'luck_home.html', {"ln": luck_system.get_all_lottery_name(), 'all_group': luck_system.get_all_group_id()})
 
 def luck_start(request):
     global lottery_name, luck_system, group_id, look_prize_num
-    # luck_system.make_temp_col(lottery_name)
     connect = MongoClient(host="127.0.0.1", port=27017)
     mydb = connect["lottery_db"]
     lottery_col = mydb["lottery_prize"]
@@ -97,7 +44,6 @@ def luck_start(request):
     for t in tmp:
         prize.append(t[lottery_name])
     if request.method == 'POST':
-        # print(request.POST)
         if 'prize_all' in request.POST:
             for i in range(1, 11):
                 luck_system.get_lottery(group_id, i, prize[i-1])
@@ -118,7 +64,8 @@ def luck_reset(request):
     if request.method == 'POST':
 
         lottery_name = request.POST.get('lottery_name')
-        luck_system.mydb['lottery_name'].insert_one({'lottery_name':lottery_name})
+        luck_system.mydb['lottery_name'].insert_one(
+            {'lottery_name': lottery_name})
         prize = []
         for i in range(1, 11):
             if request.POST.get('prize_'+str(i)) != '':
@@ -136,35 +83,37 @@ def luck_reset(request):
                 lottery_col.update_one(
                     {"prize": i+1}, {"$set": {lottery_name: prize[i]}})
         luck_system.clean_now_lottery(lottery_name)
-        return render(request, 'luck_reset.html', {'member_count': luck_system.all_col.find({"group."+str(group_id):"1"}).count(),'group_id':group_id})
+        return render(request, 'luck_reset.html', {'member_count': luck_system.all_col.find({"group."+str(group_id): "1"}).count(), 'group_id': group_id})
     else:
-        return render(request, 'luck_reset.html', {'member_count': luck_system.all_col.find({"group."+str(group_id):"1"}).count(),'group_id':group_id})
+        return render(request, 'luck_reset.html', {'member_count': luck_system.all_col.find({"group."+str(group_id): "1"}).count(), 'group_id': group_id})
 
 
 def look_home(request):
-    global luck_system, lottery_name
+    global luck_system, lottery_name, group_id
     if 'select_lottery_name' in request.POST:
         lottery_name = request.POST['select_lottery_name']
+        group_id = request.POST['group_id_select']
         print(lottery_name)
         return redirect('/look_select_prize')
-    return render(request, 'look_home.html',{"all_lottery":luck_system.get_all_lottery_name()})
+    return render(request, 'look_home.html', {"all_lottery": luck_system.get_all_lottery_name(),'all_group': luck_system.get_all_group_id()})
 
 
 def look_prize_single(request):
     global luck_system, look_prize_num, lottery_name
     luck_system.lottery_name = lottery_name
     prize_member = luck_system.get_prize_number(look_prize_num)
-    return render(request, 'look_prize.html',{'prize_member': prize_member})
+    return render(request, 'look_prize.html', {'prize_member': prize_member})
 
 
 def look_prize(request):
-    global luck_system ,lottery_name
+    global luck_system, lottery_name
     luck_system.lottery_name = lottery_name
     prize_member = luck_system.get_prize_allmember()
-    return render(request, 'look_prize.html',{'prize_member': prize_member})
+    return render(request, 'look_prize.html', {'prize_member': prize_member})
+
 
 def look_select_prize(request):
-    global luck_system ,lottery_name, look_prize_num
+    global luck_system, lottery_name, look_prize_num, group_id
 
     if 'prize_select' in request.POST:
         if request.POST['prize_select'] == 'all':
@@ -173,54 +122,49 @@ def look_select_prize(request):
             look_prize_num = int(request.POST['prize_select'])
             return redirect('/look_prize_single')
 
-
-    return render(request, 'look_select_prize.html', {'prize_list':luck_system.get_prize_list()})
+    return render(request, 'look_select_prize.html', {'prize_list': luck_system.get_prize_list()})
 
 
 def uploadFile(request):
     global group_id
     if request.method == "POST":
-        # Fetching the form data
-        # fileTitle = request.POST["fileTitle"]
         uploadedFile = request.FILES["uploadedFile"]
-
-        # Saving the information in the database
-        # document = Document(
-        #     title=fileTitle,
-        #     uploadedFile=uploadedFile
-        # )
-        # document.save()
-        # print(uploadedFile.name)
-        # return render(request, "upload_file.html")
+        document = Document(
+            title='123',
+            uploadedFile=uploadedFile
+        )
         
-        csv_name = os.path.join('media','UploadedFiles',uploadedFile.name)
-        data = pandas.read_csv(csv_name,encoding = 'UTF-8')
+        document.save()
+        csv_name = os.path.join('media', 'UploadedFiles', uploadedFile.name)
+        data = pandas.read_csv(csv_name, encoding='UTF-8')
         data_json = json.loads(data.to_json(orient='records'))
-        msg =[]
+        msg = []
         testcol = luck_system.all_col
-        opera=[]    
-        opera2=[]    
+        opera = []
+        opera2 = []
         group_id = luck_system.mydb['lottery_group'].count()+1
-        luck_system.mydb['lottery_group'].insert_one({'group_id':group_id})
+        luck_system.mydb['lottery_group'].insert_one({'group_id': group_id})
         all_tmp = testcol.find({})
         all_uid = {}
         for a in all_tmp:
-            all_uid[a['uid']]={'group':a['group'],'_id':a['_id']}
+            all_uid[a['uid']] = {'group': a['group'], '_id': a['_id']}
 
         for d in data_json:
             if d['uid'] in all_uid:
                 if str(group_id) in all_uid[d['uid']]['group']:
                     msg.append('Same group.')
                 else:
-                    opera2.append(UpdateOne({'_id':all_uid[d['uid']]['_id']},{'$set':{'group.'+str(group_id):'1'}}))
+                    opera2.append(UpdateOne({'_id': all_uid[d['uid']]['_id']}, {
+                                  '$set': {'group.'+str(group_id): '1'}}))
             else:
-                opera.append({'uid':d['uid'],'uname':d['uname'],'group': {str(group_id): '1'}})
+                opera.append(
+                    {'uid': d['uid'], 'uname': d['uname'], 'group': {str(group_id): '1'}})
 
-        if len(opera)>0 :
+        if len(opera) > 0:
             testcol.insert_many(opera)
         if len(opera2) > 0:
             testcol.bulk_write(opera2)
-        
+
         os.remove(csv_name)
         return redirect('/luck_reset')
     return render(request, "upload_file.html")
@@ -238,7 +182,6 @@ def select_group(request):
             if str(i.group_id) in request.POST['group_id']:
                 group_id = i.group_id
                 return redirect("/luck_reset")
-        return render(request, 'select_group.html', {'all_group':luck_system.get_all_group_id()})
-        
+        return render(request, 'select_group.html', {'all_group': luck_system.get_all_group_id()})
 
-    return render(request, 'select_group.html', {'all_group':luck_system.get_all_group_id()})
+    return render(request, 'select_group.html', {'all_group': luck_system.get_all_group_id()})

@@ -7,27 +7,17 @@
 
 <body>
     <div style="width: 250px;margin:0 auto">
-        <!-- <form method="post">
-            {% csrf_token %}
-            <input type="submit" value="start" name="type">
-        </form> -->
-        
         <br><br>
-        <!-- <form method="post">
-            {% csrf_token %}
-            <input type="submit" value="luck_start" name="start_lottery">
-        </form> -->
-
         <form method="post">
             <label>lottery name</label>
-            <select name="start_lottery">
+            <select name="lottery_name_select">
                 {% for post in ln %}
                 <option value={{post.lottery_name}}>{{post.lottery_name}}</option>
                 {% endfor %}
             </select>
             <br><br>
             <label>Group id:</label>
-            <select name="start_lottery">
+            <select name="group_id_select">
                 {% for post in all_group %}
                 <option value={{post.group_id}}>{{post.group_id}}</option>
                 {% endfor %}
@@ -42,7 +32,6 @@
         </button>
         <form method="post">
             {% csrf_token %}
-            <!-- <label for="uid">員工編號：</label> -->
             <input type="submit" value="lottery clear" name="lottery_clear">
         </form>
         <button type="button">

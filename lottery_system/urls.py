@@ -19,7 +19,6 @@ from lottery import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.luck_home, name='luck_home'),
-    path('scan', views.myscan, name='scan'),
     path('luck_home', views.luck_home, name='luck_home'),
     path('luck_start', views.luck_start, name='luck_start'),
     path('luck_reset', views.luck_reset, name='luck_reset'),
@@ -28,8 +27,6 @@ urlpatterns = [
     path('look_prize_single', views.look_prize_single, name='look_prize_single'),
     path('look_select_prize', views.look_select_prize, name='look_select_prize'),
     path('all_member', views.users, name='all_member'),
-    path('add', views.add, name='add'),
-    path('welcome/', views.welcome, name='welcome'),
-    path('upload_file', views.uploadFile, name = "uploadFile"),
-    path('select_group', views.select_group,name='select_group')
+    path('upload_file', views.uploadFile, name="uploadFile"),
+    path('select_group', views.select_group, name='select_group')
 ]

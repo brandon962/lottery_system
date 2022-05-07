@@ -10,18 +10,13 @@
         <label for="uid">start luck</label>
         <form method="post">
             {% csrf_token %}
-            <!-- <label for="uid">員工編號：</label> -->
             <input type="submit" value="All prize" name="prize_all">
         </form>
 
         <form method="post">
             {% csrf_token %}
-            <!-- <label for="uid">員工編號：</label> -->
             <input type="submit" value="First prize" name="prize_1">
         </form>
-        <!-- {% if result %}
-        <p style="text-align: center">新增成功</p>
-        {% endif %} -->
         <form method="post">
             {% csrf_token %}
             <input type="submit" value="Second prize" name="prize_2">
